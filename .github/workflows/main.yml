@@ -7,7 +7,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3+  # No change needed here, v3 already supports Node.js 20
+      - uses: actions/checkout@v3  # No change needed here, v3 already supports Node.js 20
 
       - name: Configure git
         run: |
@@ -19,7 +19,7 @@ jobs:
           if [ ! -z "$(git remote -v | grep upstream)" ]; then
             echo "Upstream remote already exists."
           else
-            git remote add upstream https://github.com/<original-username>/<original-repo-name>.git
+            git remote add upstream https://github.com/coolnerdycoder/cooliptv-tataplay.m3u.git
           fi
 
       - name: Fetch changes from upstream
