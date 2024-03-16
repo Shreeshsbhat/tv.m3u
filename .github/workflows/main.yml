@@ -1,0 +1,27 @@
+name: Sync Forked Repository
+
+on:
+  schedule:
+    - cron: '30 20 * * *'  # Run everyday at 2 AM IST (UTC+5:30)
+
+jobs:
+  sync_forked_repository:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+      - name: Fetch upstream changes
+        run: git fetch upstream
+
+      - name: Merge upstream changes into main branch
+        run: git merge upstream/main --no-edit
+
+      - name: Push changes to origin
+        run: git push origin main
