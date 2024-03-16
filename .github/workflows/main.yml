@@ -4,7 +4,7 @@ name: Sync Fork (On Demand)
 #   workflow_dispatch:
 on:
   schedule:
-    - cron: "*/1 * * * *"
+    - cron: '*/5 * * * *'
 
 jobs:
   sync:
