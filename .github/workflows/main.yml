@@ -1,8 +1,7 @@
 name: Sync Forked Repository
 
 on:
-  schedule:
-    - cron: '30 20 * * *'  # Run everyday at 2 AM IST (UTC+5:30)
+  workflow_dispatch:
 
 jobs:
   sync_forked_repository:
