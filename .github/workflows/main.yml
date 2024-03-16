@@ -1,26 +1,44 @@
-name: Sync Forked Repository
+name: Sync Fork (On Demand)
 
 on:
   workflow_dispatch:
 
 jobs:
-  sync_forked_repository:
+  sync:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Configure Git
+      - name: Configure git
         run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
+          git config --global user.name "CI Bot"
+          git config --global user.email "noreply@your-email.com"
 
-      - name: Fetch upstream changes
+      - name: Add upstream remote (if not already added)
+        run: |
+          if [ ! -z "$(git remote -v | grep upstream)" ]; then
+            echo "Upstream remote already exists."
+          else
+            git remote add upstream https://github.com/<original-username>/<original-repo-name>.git
+          fi
+
+      - name: Fetch changes from upstream
         run: git fetch upstream
 
-      - name: Merge upstream changes into main branch
-        run: git merge upstream/main --no-edit
+      - name: Check for new commits (optional)
+        id: check-changes
+        run: |
+          upstream_commit_sha=$(git rev-parse upstream/main)
+          head_commit_sha=$(git rev-parse HEAD)
+          if [ "$upstream_commit_sha" != "$head_commit_sha" ]; then
+            echo "There are new commits in the upstream repository."
+          else
+            echo "Your fork is already up-to-date."
+          fi
 
-      - name: Push changes to origin
-        run: git push origin main
+      - name: Merge upstream changes (optional, based on check-changes output)
+        if: steps.check-changes.outputs.new_commits == 'true'
+        run: |
+          git checkout main
+          git merge upstream/main
+          git push origin main
